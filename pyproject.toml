@@ -1,7 +1,7 @@
 [project]
-name = "ollama-batch-cluster"
+name = "ollama-batch-infernce"
 version = "0.1.0"
-description = "Ollama Batch Cluster"
+description = "Ollama Batch Inference"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

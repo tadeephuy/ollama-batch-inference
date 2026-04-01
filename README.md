@@ -14,7 +14,7 @@ These instructions assume that you are already know how to install/use Ollama, a
 
 ## Starting the Ollama servers
 
-The first thing we'll need to do is start up the Ollama servers, one per GPU. If you only have one GPU, or one GPU per multiple servers, and Ollama is already running, you probably don't need to this. To start the Ollama servers, one per GPU, we are going to use the provided [*ollama-batch-servers.sh*](https://github.com/robert-mcdermott/ollama-batch-cluster/blob/main/ollama-batch-servers.sh) shell script. It takes a single integer argument which indicates the number of GPUs in the system you want to use.
+The first thing we'll need to do is start up the Ollama servers, one per GPU. If you only have one GPU, or one GPU per multiple servers, and Ollama is already running, you probably don't need to this. To start the Ollama servers, one per GPU, we are going to use the provided *ollama-batch-servers.sh* shell script. It takes a single integer argument which indicates the number of GPUs in the system you want to use.
 
 **Usage:**
 
@@ -74,13 +74,34 @@ system_message = """You are an alien that can only respond with strings of emoji
 "127.0.0.1:11434" = 0
 ```
 
-## Running a batch job
+## Environment setup (uv)
 
-Now that we have our servers running, prompts prepared and a configuration file, it's time to process the prompts across the cluster of hosts and GPUs. To do that we'll use the provided [*ollama-batch-process.py*](https://github.com/robert-mcdermott/ollama-batch-cluster/blob/main/response-printer.py). But first we'll need to install the required dependencies, the *ollama* and *toml* modules:
+From the repo root, create a local virtual environment and install dependencies with `uv`:
 
 ```bash
-pip install ollama toml
+# Install uv if needed (macOS)
+brew install uv
+
+# Create and activate a local .venv with Python 3.12
+uv venv --python 3.12
+source .venv/bin/activate
+
+# Install project dependencies from pyproject.toml/uv.lock
+uv sync
+
+# Optional: install additional pinned deps if requirements.txt exists
+uv pip install -r requirements.txt
 ```
+
+You can also run scripts without activating the environment:
+
+```bash
+uv run python ollama-batch-process.py --help
+```
+
+## Running a batch job
+
+Now that we have our servers running, prompts prepared and a configuration file, it's time to process the prompts across the cluster of hosts and GPUs. To do that we'll use the provided [*ollama-batch-process.py*](https://github.com/robert-mcdermott/ollama-batch-cluster/blob/main/response-printer.py).
 
 The following is the usage documentation for the client:
 

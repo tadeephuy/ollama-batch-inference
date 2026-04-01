@@ -3,7 +3,7 @@
 # Constants
 HOST="0.0.0.0"
 BASE_PORT=11432
-OLLAMA_BINARY="/home/rmcdermo/ollama/bin/ollama"
+OLLAMA_BINARY="${OLLAMA_BINARY:-$(command -v ollama 2>/dev/null)}"
 LOG_DIR="ollama-server-logs"
 SLEEP_INTERVAL=1
 
@@ -23,8 +23,13 @@ if ! [[ "$NUM_GPUS" =~ ^[0-9]+$ ]] || [[ "$NUM_GPUS" -le 0 ]]; then
 fi
 
 # Check if the Ollama binary exists
+if [[ -z "$OLLAMA_BINARY" ]]; then
+    echo "Error: Could not find 'ollama' in PATH. Install Ollama or set OLLAMA_BINARY to its full path."
+    exit 1
+fi
+
 if [[ ! -x "$OLLAMA_BINARY" ]]; then
-    echo "Error: Ollama binary not found or not executable at $OLLAMA_BINARY"
+    echo "Error: Ollama binary found but not executable at $OLLAMA_BINARY"
     exit 1
 fi
 
@@ -57,4 +62,3 @@ for ((i=0; i<NUM_GPUS; i++)); do
 done
 
 echo "All server instances started successfully."
-
